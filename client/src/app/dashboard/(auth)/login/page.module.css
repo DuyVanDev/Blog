@@ -1,0 +1,60 @@
+.glass_frame {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+}
+
+.tabs {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.tab {
+  background: none;
+  border: none;
+  color: #fff;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 18px;
+  outline: none;
+  transition: 0.3s;
+}
+
+.tab:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+}
+
+.tab-content {
+  display: none;
+  margin-top: 20px;
+}
+
+/* input{
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: none;
+  border-radius: 5px;
+  outline: none;
+}
+
+button {
+  width: 100%;
+  padding: 10px 0;
+  background: #323232;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  outline: none;
+  cursor: pointer;
+  font-size: 16px;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #444;
+} */

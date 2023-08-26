@@ -1,0 +1,15 @@
+.mainContainer {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap : 50px 0;
+}
+
+
+
+.container {
+    display: flex;
+    align-items: flex-start;
+    gap : 20px;
+    
+}
