@@ -1,104 +1,154 @@
 "use client";
-import Link from "next/link";
 import React, { useContext, useState } from "react";
-import styles from "./page.module.css";
-import DarkModeToggle from "../DarkMode/DarkModeToggle";
+import {
+  AppBar,
+  Box,
+  Container,
+  IconButton,
+  Drawer,
+  List,
+  ListItem,
+  Stack,
+  Fab,
+} from "@mui/material";
+import {
+  NavToolbar,
+  pages,
+  MenuButton,
+  colors,
+  MenuListItemButton,
+  MenuListItemText,
+} from "./Tools";
+import PersonIcon from '@mui/icons-material/Person';
+import PetsIcon from "@mui/icons-material/Pets";
+import MenuOpenIcon from "@mui/icons-material/MenuOpen";
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import FacebookIcon from "@mui/icons-material/Facebook";
+import GitHubIcon from "@mui/icons-material/GitHub";
+import Link from "next/link";
 import { AuthContext } from "../../../context/AuthContext";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser } from "@fortawesome/free-solid-svg-icons";
-
-const links = [
-  {
-    id: 1,
-    title: "Home",
-    url: "/",
-  },
-  {
-    id: 2,
-    title: "Portfolio",
-    url: "/portfolio",
-  },
-  {
-    id: 3,
-    title: "Blog",
-    url: "/blog",
-  },
-  {
-    id: 4,
-    title: "About",
-    url: "/about",
-  },
-  {
-    id: 5,
-    title: "Contact",
-    url: "/contact",
-  },
-  {
-    id: 6,
-    title: "Dashboard",
-    url: "/dashboard",
-  },
-];
 
 const Navbar = () => {
-  // useEffect(() => {
-  //   fetch('http://localhost:4000/profile', {
-  //     credentials: 'include',
-  //   }).then(response => {
-  //     response.json().then(userInfo => {
-  //       setUserInfo(userInfo);
-  //     });
-  //   });
-  // }, []);
   const { authTokens, logoutUser } = useContext(AuthContext);
-  const [dropdown, setDropdown] = useState(false);
-  const handleClick = () => {
-    setDropdown(!dropdown);
-  };
-
+  const [openMenu, setOpenMenu] = useState(false);
   return (
-    <div className={styles.container}>
-      <Link href={"/"} className={styles.logo}>
-        Van duy
-      </Link>
-      <div className={styles.links}>
-        <DarkModeToggle />
-        {links.map((link) => (
-          <Link key={link.id} className={styles.link} href={link.url}>
-            {link.title}
-          </Link>
-        ))}
+    <AppBar style={{ background: "#333333" }} position="fixed">
+      <Container maxWidth="xl">
+        <NavToolbar disableGutters>
+          <Box>
+            <Link href="/" color={colors.textColor}>
+              <PetsIcon sx={{ fontSize: { md: "40px", xs: "25px" } }} />
+            </Link>
+          </Box>
+          <Box sx={{ display: { xs: "none", md: "flex", gap: "28px" } }}>
+            {pages.map((page, index) => (
+              <MenuButton key={index}>
+                <Link href={page.link}>{page.name}</Link>
+              </MenuButton>
+            ))}
+          </Box>
 
-        {!authTokens ? (
-          <div>
-            <button className={styles.logout}>
-              <Link href={"/dashboard/login"}>Login</Link>
-            </button>
-          </div>
-        ) : (
-          <div className={styles.contentInfo}>
-            <div className={styles.info} onClick={handleClick} >
-              <FontAwesomeIcon icon={faUser} />
-              <p>{authTokens.username}</p>
-            </div>
-            {dropdown && (
-              <ul className={styles.moreInfo}>
-                <li>
-                  <Link href={`/profile/?id=${authTokens.userId}`}>
-                    Thong tin ca nhan
-                  </Link>
-                </li>
-                <li>Dang xuat</li>
-              </ul>
-            )}
+          {!authTokens ? (
+            <Box sx={{ display: { xs: "none", md: "flex", gap: "28px" } }}>
+               <MenuButton>
+                <Link href="/dashboard/login">Login</Link>
+              </MenuButton>
+              <MenuButton>
+                <Link href="/dashboard/login">Register</Link>
+              </MenuButton>
+            </Box>
+          ) : (
+            <Link href={`profile/?id=${authTokens.userId}`}>
+            <Box sx={{ display: { xs: "none", md: "flex", gap: "28px" } }}>
+              <MenuButton>
+                <PersonIcon />
+                <p>{authTokens.username}</p>
+              </MenuButton>
 
-            <button onClick={logoutUser} className={styles.logout}>
-              Logout
-            </button>
-          </div>
-        )}
-      </div>
-    </div>
+            </Box></Link>
+          )}
+          <Box
+            sx={{
+              display: { xs: "flex", md: "none" },
+              alignItems: "center",
+              textAlign: "center",
+            }}
+          >
+            <IconButton onClick={() => setOpenMenu(!openMenu)}>
+              <MenuOpenIcon
+                sx={{ fontSize: "25px", color: colors.textColor }}
+              />
+            </IconButton>
+            <Drawer
+              PaperProps={{
+                sx: {
+                  backgroundColor: "#F9F9F9",
+                },
+              }}
+              anchor="left"
+              open={openMenu}
+              onClose={() => setOpenMenu(!openMenu)}
+            >
+              <Link
+                href="/"
+                sx={{
+                  textAlign: "center",
+                  color: colors.bgColors,
+                  padding: "10px",
+                }}
+              >
+                <PetsIcon sx={{ fontSize: "50px" }} />
+              </Link>
+              <List>
+                {pages.map((page, index) => (
+                  <ListItem disablePadding key={index}>
+                    <MenuListItemButton
+                      component="a"
+                      href={page.link}
+                      key={index}
+                    >
+                      <MenuListItemText primary={page.name} />
+                    </MenuListItemButton>
+                  </ListItem>
+                ))}
+              </List>
+              <Stack
+                direction="row"
+                spacing={1}
+                m={1}
+                pt={3}
+                sx={{ justifyContent: "center" }}
+              >
+                <Fab
+                  variant="extended"
+                  sx={{
+                    padding: "10px",
+                  }}
+                >
+                  <LinkedInIcon />
+                </Fab>
+                <Fab
+                  variant="extended"
+                  sx={{
+                    padding: "10px",
+                  }}
+                >
+                  <FacebookIcon />
+                </Fab>
+                <Fab
+                  variant="extended"
+                  sx={{
+                    padding: "10px",
+                  }}
+                >
+                  <GitHubIcon />
+                </Fab>
+              </Stack>
+            </Drawer>
+          </Box>
+        </NavToolbar>
+      </Container>
+    </AppBar>
   );
 };
 

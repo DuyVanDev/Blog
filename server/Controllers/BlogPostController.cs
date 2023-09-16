@@ -4,6 +4,8 @@ using server.Models;
 using server.Services;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
+using server.DTO;
+using AutoMapper;
 
 namespace server.Controllers
 {
@@ -12,17 +14,19 @@ namespace server.Controllers
     public class BlogPostController : ControllerBase
     {
         private readonly IBlogPostService _blogPostService;
+        private readonly IMapper _mapper;
         private readonly Cloudinary _cloudinary;
-        public BlogPostController(IBlogPostService blogPostService,  Cloudinary cloudinary)
+        public BlogPostController(IBlogPostService blogPostService, Cloudinary cloudinary, IMapper mapper)
         {
             _blogPostService = blogPostService;
             _cloudinary = cloudinary;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var result =  await _blogPostService.GetAllAsync();
+            var result = await _blogPostService.GetAllAsync();
             return Ok(result);
         }
 
@@ -35,7 +39,7 @@ namespace server.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Post([FromForm] BlogPost blogPost)
+        public async Task<IActionResult> Post([FromForm] BlogPostDto blogPost)
         {
             if (blogPost == null)
             {
@@ -61,7 +65,7 @@ namespace server.Controllers
                 {
                     return BadRequest(uploadResult.Error.Message);
                 }
-                var newblogPost = new BlogPost
+                var newblogPost = new BlogPostDto
                 {
                     Title = blogPost.Title,
                     Content = blogPost.Content,
@@ -69,14 +73,26 @@ namespace server.Controllers
                     CategoryID = blogPost.CategoryID,
                     Image = uploadResult.SecureUri.AbsoluteUri
                 };
+                var blogPostMap = _mapper.Map<BlogPost>(newblogPost);
 
 
-                await _blogPostService.CreateAsync(newblogPost);
+                await _blogPostService.CreateAsync(blogPostMap);
                 return Ok(newblogPost);
 
             }
 
 
+        }
+
+        [HttpGet("Post")]
+        public async Task<IActionResult> GetBlogPostByUser(string userId)
+        {
+            var result = await _blogPostService.GetBlogPostsByUser(userId);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            return Ok(result);
         }
     }
 }

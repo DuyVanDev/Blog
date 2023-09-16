@@ -13,11 +13,14 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  
   return (
+   
     <html lang="en">
       <body className={inter.className}>
         {/* <ReduxProvider> */}
-          <ThemeProvider>
+          {/* <ThemeProvider> */}
+          
             <AuthProvider>
               <div className="container">
                 <Navbar />
@@ -25,7 +28,7 @@ export default function RootLayout({ children }) {
                 <Footer />
               </div>
             </AuthProvider>
-          </ThemeProvider>
+          {/* </ThemeProvider> */}
         {/* </ReduxProvider> */}
       </body>
     </html>

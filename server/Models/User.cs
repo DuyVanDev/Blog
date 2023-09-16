@@ -11,6 +11,8 @@ namespace server.Models
         public string Username { get; set; } = null!;
         public string Password { get; set; } = null!;
 
+        public string Avatar { get; set;} = "https://res.cloudinary.com/dqpjoki72/image/upload/v1694857147/avatar_dovxof.jpg";
+
 
     }
 }

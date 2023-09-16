@@ -19,6 +19,8 @@ namespace server.Models
          [BsonRepresentation(BsonType.ObjectId)] 
         public string CategoryID { get; set; } = null!;
         public string Image { get; set; } = null!;
+
+        public List<Comment> Comments { get; set; }
         public DateTime? CreatedAt { get; set; } = DateTime.Now;
 
         

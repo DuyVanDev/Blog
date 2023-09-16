@@ -4,6 +4,7 @@ import React from "react";
 import styles from "./page.module.css";
 import { notFound } from "next/navigation";
 import useSWR from "swr";
+import Comments from "@/components/comments/Comments";
 
 const BlogPost = ({ params }) => {
   const fetcher = (...args) => fetch(...args).then((res) => res.json());
@@ -21,25 +22,13 @@ const BlogPost = ({ params }) => {
             <div
               style={{ width: "100%", height: "500px", position: "relative" }}
             >
-              <Image src={data.imageUrl} layout="fill" alt="Image" />
+              <Image src={data.image} layout="fill" alt="Image" />
             </div>
             <p className={styles.content}>{data.content}</p>
 
-            <div className="contentBox">
-              <div className="writeComment">
-                <input placeholder="Write Something..." />
-                <button> Gui</button>
-              </div>
-              <div className="listComment">
-                {data.comments.map((comment) => (
-                  <div key={comment.commentID}>
-                    <ul>
-                      <li>{comment.commentText}</li>
-                    </ul>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <div className={styles.comment}>
+            <Comments postSlug={params.id}/>
+          </div>
           </div>
           <div className={styles.right}>
             <h1 className={styles.title}>{data.title}</h1>
@@ -53,7 +42,7 @@ const BlogPost = ({ params }) => {
                     position: "relative",
                   }}
                 >
-                  <Image src={data.imageUrl} layout="fill" alt="Image" />
+                  <Image src={data.image} layout="fill" alt="Image" />
                 </div>
                 <div className="title">{data.title}</div>
               </div>

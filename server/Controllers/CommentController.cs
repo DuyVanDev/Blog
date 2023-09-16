@@ -21,5 +21,12 @@ namespace server.Controllers{
             await _commentService.CreateAsync(comment);
             return Ok(comment); 
         } 
+
+        [HttpGet]
+        public async Task<IActionResult> GetCommentByPost(string postId)
+        {
+            var result = await _commentService.GetCommentByPost(postId);
+            return Ok(result); 
+        } 
     }
 }

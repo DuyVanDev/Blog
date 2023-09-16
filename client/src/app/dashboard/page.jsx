@@ -9,6 +9,7 @@ import useAxios from "@/untils/useAxios";
 import { AuthContext } from "../../../context/AuthContext";
 import axios from "axios";
 import styles from "./page.module.css";
+import Editor from "@/Editor";
 
 const Dashboard = () => {
   const router = useRouter();
@@ -38,7 +39,6 @@ const Dashboard = () => {
   };
   const submitForm = async (e) => {
     e.preventDefault();
-
     // const data = {
     //   title,
     //   content,
@@ -68,7 +68,6 @@ const Dashboard = () => {
 
       const { data } = await api(options);
 
-      console.log(data);
 
       // const { data } = await api.post("https://localhost:7231/api/BlogPost", {
       //   // title,
@@ -110,13 +109,7 @@ const Dashboard = () => {
           onChange={(e) => setTitle(e.target.value)}
         /> */}
         <div className={styles.editorContainer}>
-          <ReactQuill
-            className="editor"
-            theme="snow"
-            value={content}
-            onChange={setContent}
-            bounds={".content"}
-          />
+        <Editor value={content} onChange={setContent} />
         </div>
 
         <input
@@ -136,7 +129,7 @@ const Dashboard = () => {
         <label>Theme </label>
         <select onChange={handleChange}>
           <option value="N/A">Selected</option>
-          <option value="1">Art</option>
+          <option value="64e98e157529e41e695baba3">Art</option>
           <option value="2">Technology</option>
         </select>
 

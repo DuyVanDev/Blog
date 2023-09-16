@@ -25,6 +25,11 @@ builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IBlogPostService, BlogPostService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
+builder.Services.AddScoped<ICommentService, CommentService>();
+
+builder.Services.AddSingleton<IDictionary<string, string>>(opts => new Dictionary<string, string>());
+
+builder.Services.AddSignalR();
 
 builder.Services.Configure<AppSetting>(builder.Configuration.GetSection("AppSettings"));
 
@@ -60,8 +65,11 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddCors(p => p.AddPolicy("corspolicy", build =>
 {
-    build.WithOrigins("http://localhost:3000/").AllowAnyHeader().AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod();
+    build.AllowAnyHeader().AllowCredentials().AllowAnyMethod().WithOrigins("http://localhost:3000");
 }));
+
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddSingleton(new Cloudinary(new Account(
     "dqpjoki72",
@@ -77,12 +85,23 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseRouting();
+
 app.UseCors("corspolicy");
+// app.UseEndpoints(endpoints =>
+// {
+//     endpoints.MapHub<ChatHub>("/chat");
+// });
+
+
 app.UseHttpsRedirection();
+
 app.UseAuthentication();
 
 app.UseAuthorization();
 
 app.MapControllers();
+
+
 
 app.Run();

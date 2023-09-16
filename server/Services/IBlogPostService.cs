@@ -6,7 +6,9 @@ namespace server.Services
     {
         Task CreateAsync(BlogPost blogPost);
 
-        Task<IEnumerable<BlogPost>> GetAllAsync();
+        Task<IEnumerable<Object>> GetAllAsync();
         Task<BlogPost> GetById(string postId);
+
+        Task<IEnumerable<BlogPost>> GetBlogPostsByUser(string userId);
     }
 }
