@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "9tFCF1GdQOpa/t6ynpkL0iY4viwUpKsUYsb1mUJRJb3gUo0vUv7sCue647/rUKdwmIOoxPAY6V327/+0MlUj5g==",
+  "dgSpecHash": "4GmYArU3X5Wt6k354tFVQNSKdV6fkYelASKp3Xj6/HdxZRRDNHojTX/ZyomJcNoGoX2UOs7QVVxC259M9Yhb5A==",
   "success": true,
-  "projectFilePath": "e:\\duanReact\\BlogPost\\server\\server.csproj",
+  "projectFilePath": "E:\\duanReact\\BlogPost\\server\\server.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\DuyNguyen\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\DuyNguyen\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",

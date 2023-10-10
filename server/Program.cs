@@ -29,7 +29,6 @@ builder.Services.AddScoped<ICommentService, CommentService>();
 
 builder.Services.AddSingleton<IDictionary<string, string>>(opts => new Dictionary<string, string>());
 
-builder.Services.AddSignalR();
 
 builder.Services.Configure<AppSetting>(builder.Configuration.GetSection("AppSettings"));
 

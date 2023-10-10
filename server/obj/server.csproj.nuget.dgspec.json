@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "e:\\duanReact\\BlogPost\\server\\server.csproj": {}
+    "E:\\duanReact\\BlogPost\\server\\server.csproj": {}
   },
   "projects": {
-    "e:\\duanReact\\BlogPost\\server\\server.csproj": {
+    "E:\\duanReact\\BlogPost\\server\\server.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "e:\\duanReact\\BlogPost\\server\\server.csproj",
+        "projectUniqueName": "E:\\duanReact\\BlogPost\\server\\server.csproj",
         "projectName": "server",
-        "projectPath": "e:\\duanReact\\BlogPost\\server\\server.csproj",
+        "projectPath": "E:\\duanReact\\BlogPost\\server\\server.csproj",
         "packagesPath": "C:\\Users\\DuyNguyen\\.nuget\\packages\\",
-        "outputPath": "e:\\duanReact\\BlogPost\\server\\obj\\",
+        "outputPath": "E:\\duanReact\\BlogPost\\server\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\DuyNguyen\\AppData\\Roaming\\NuGet\\NuGet.Config",

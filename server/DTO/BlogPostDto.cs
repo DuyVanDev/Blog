@@ -7,5 +7,7 @@ namespace server.DTO
         public string UserID { get; set; }
         public string CategoryID { get; set; }
         public string Image { get; set; }
+
+        public DateTime? CreatedAt { get; set; } 
     }
 }

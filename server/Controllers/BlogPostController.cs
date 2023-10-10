@@ -6,6 +6,7 @@ using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using server.DTO;
 using AutoMapper;
+using MongoDB.Bson;
 
 namespace server.Controllers
 {
@@ -33,6 +34,10 @@ namespace server.Controllers
         [HttpGet("{postId}")]
         public async Task<IActionResult> GetById(string postId)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             var result = await _blogPostService.GetById(postId);
             return Ok(result);
         }
@@ -71,7 +76,8 @@ namespace server.Controllers
                     Content = blogPost.Content,
                     UserID = blogPost.UserID,
                     CategoryID = blogPost.CategoryID,
-                    Image = uploadResult.SecureUri.AbsoluteUri
+                    Image = uploadResult.SecureUri.AbsoluteUri,
+                    CreatedAt = DateTime.Now
                 };
                 var blogPostMap = _mapper.Map<BlogPost>(newblogPost);
 
@@ -85,14 +91,50 @@ namespace server.Controllers
         }
 
         [HttpGet("Post")]
-        public async Task<IActionResult> GetBlogPostByUser(string userId)
+        public async Task<IActionResult> GetBlogPostByUser([FromQuery] string userId)
         {
-            var result = await _blogPostService.GetBlogPostsByUser(userId);
+            ObjectId  id = new ObjectId(userId);
+            var result = await _blogPostService.GetBlogPostsByUser(id);
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
             return Ok(result);
+        }
+
+        [HttpGet("/search")]
+        public async Task<IActionResult> SearchPosts([FromQuery] string q)
+        {
+            var result = await _blogPostService.SearchBlogPost(q);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            return Ok(result);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(string id,[FromBody] BlogPost newBlogPost) {
+            var blogPost =  await _blogPostService.GetById(id);
+
+            newBlogPost.UserID = blogPost.UserID;
+            newBlogPost.CategoryID = blogPost.CategoryID;
+            newBlogPost.Comments = blogPost.Comments;
+            newBlogPost.CreatedAt = blogPost.CreatedAt;
+             if (blogPost == null)
+                return NotFound();
+            await _blogPostService.UpdateBlogPost(id, newBlogPost);
+            return Ok(newBlogPost);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            var product = await _blogPostService.GetById(id);
+            if (product == null)
+                return NotFound();
+            await _blogPostService.DeleteAysnc(id);
+            return Ok("deleted successfully");
         }
     }
 }
