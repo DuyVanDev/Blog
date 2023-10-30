@@ -99,7 +99,7 @@ const Dashboard = () => {
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Try typing something in here!"
           />
-          <label for="input1">Name</label>
+          <label htmlFor="input1">Name</label>
         </div>
         {/* <input
           type="text"

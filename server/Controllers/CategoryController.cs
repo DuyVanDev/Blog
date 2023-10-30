@@ -24,6 +24,14 @@ namespace server.Controllers
             await _categoryService.CreateAsync(category);
             return Ok("Create successfully");
         }
+        [HttpGet]
+        public async Task<IActionResult> GetAlls()
+        {
+           
+
+            var result = await _categoryService.GetAllAsync();
+            return Ok(result);
+        }
     }
 
 }

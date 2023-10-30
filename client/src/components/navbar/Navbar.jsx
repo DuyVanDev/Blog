@@ -1,155 +1,134 @@
 "use client";
-import React, { useContext, useState } from "react";
-import {
-  AppBar,
-  Box,
-  Container,
-  IconButton,
-  Drawer,
-  List,
-  ListItem,
-  Stack,
-  Fab,
-} from "@mui/material";
-import {
-  NavToolbar,
-  pages,
-  MenuButton,
-  colors,
-  MenuListItemButton,
-  MenuListItemText,
-} from "./Tools";
-import PersonIcon from '@mui/icons-material/Person';
-import PetsIcon from "@mui/icons-material/Pets";
-import MenuOpenIcon from "@mui/icons-material/MenuOpen";
-import LinkedInIcon from "@mui/icons-material/LinkedIn";
-import FacebookIcon from "@mui/icons-material/Facebook";
-import GitHubIcon from "@mui/icons-material/GitHub";
+import * as React from "react";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import Menu from "@mui/material/Menu";
+import MenuIcon from "@mui/icons-material/Menu";
+import Container from "@mui/material/Container";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import Tooltip from "@mui/material/Tooltip";
+import MenuItem from "@mui/material/MenuItem";
+import AdbIcon from "@mui/icons-material/Adb";
+import AccountMenu from "../accountmenu/AccountMenu";
+import SearchBar from "../searchbar/SearchBar";
 import Link from "next/link";
-import { AuthContext } from "../../../context/AuthContext";
 
-const Navbar = () => {
-  const { authTokens, logoutUser } = useContext(AuthContext);
-  const [openMenu, setOpenMenu] = useState(false);
+const pages = ["Products", "Pricing", "Blog"];
+const settings = ["Profile", "Account", "Dashboard", "Logout"];
+
+function Navbar() {
+  const [anchorElNav, setAnchorElNav] = React.useState(null);
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+  const handleOpenNavMenu = (event) => {
+    setAnchorElNav(event.currentTarget);
+  };
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
+  };
+
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+
   return (
-    <AppBar style={{ background: "#333333" }} position="fixed">
+    <AppBar position="static" style={{ background: "transparent" }}>
       <Container maxWidth="xl">
-        <NavToolbar disableGutters>
-          <Box>
-            <Link href="/" color={colors.textColor}>
-              <PetsIcon sx={{ fontSize: { md: "40px", xs: "25px" } }} />
-            </Link>
-          </Box>
-          <Box sx={{ display: { xs: "none", md: "flex", gap: "28px" } }}>
-            {pages.map((page, index) => (
-              <MenuButton key={index}>
-                <Link href={page.link}>{page.name}</Link>
-              </MenuButton>
-            ))}
-          </Box>
+        <Toolbar disableGutters>
+          <Link href={"/"} style={{ flexGrow: 1 , display : "flex", justifyContent: "flex-start", alignItems : "center"}}>
+            <AdbIcon
+              sx={{
+                display: { xs: "none", md: "flex" },
+                mr: 1,
+                color: "black",
+              }}
+            />
+            <Typography
+              variant="h6"
+              noWrap
+              component="a"
+              sx={{
+                mr: 2,
+                display: { xs: "none", md: "flex" },
+                fontFamily: "monospace",
+                fontWeight: 700,
+                letterSpacing: ".1rem",
+                color: "black",
+                textDecoration: "none",
+              }}
+            >
+              T-BLOG
+            </Typography>
+          </Link>
 
-          {!authTokens ? (
-            <Box sx={{ display: { xs: "none", md: "flex", gap: "28px" } }}>
-               <MenuButton>
-                <Link href="/dashboard/login">Login</Link>
-              </MenuButton>
-              <MenuButton>
-                <Link href="/dashboard/login">Register</Link>
-              </MenuButton>
-            </Box>
-          ) : (
-            <Link href={`profile/?id=${authTokens.userId}`}>
-            <Box sx={{ display: { xs: "none", md: "flex", gap: "28px" } }}>
-              <MenuButton>
-                <PersonIcon />
-                <p>{authTokens.username}</p>
-              </MenuButton>
-
-            </Box></Link>
-          )}
           <Box
             sx={{
+              flexGrow: 1,
               display: { xs: "flex", md: "none" },
-              alignItems: "center",
-              textAlign: "center",
+              marginLeft: { md: "50px" },
             }}
           >
-            <IconButton onClick={() => setOpenMenu(!openMenu)}>
-              <MenuOpenIcon
-                sx={{ fontSize: "25px", color: colors.textColor }}
-              />
-            </IconButton>
-            <Drawer
-              PaperProps={{
-                sx: {
-                  backgroundColor: "#F9F9F9",
-                },
-              }}
-              anchor="left"
-              open={openMenu}
-              onClose={() => setOpenMenu(!openMenu)}
+            <IconButton
+              size="large"
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleOpenNavMenu}
+              color="inherit"
             >
-              <Link
-                href="/"
-                sx={{
-                  textAlign: "center",
-                  color: colors.bgColors,
-                  padding: "10px",
-                }}
-              >
-                <PetsIcon sx={{ fontSize: "50px" }} />
-              </Link>
-              <List>
-                {pages.map((page, index) => (
-                  <ListItem disablePadding key={index}>
-                    <MenuListItemButton
-                      component="a"
-                      href={page.link}
-                      key={index}
-                    >
-                      <MenuListItemText primary={page.name} />
-                    </MenuListItemButton>
-                  </ListItem>
-                ))}
-              </List>
-              <Stack
-                direction="row"
-                spacing={1}
-                m={1}
-                pt={3}
-                sx={{ justifyContent: "center" }}
-              >
-                <Fab
-                  variant="extended"
-                  sx={{
-                    padding: "10px",
-                  }}
-                >
-                  <LinkedInIcon />
-                </Fab>
-                <Fab
-                  variant="extended"
-                  sx={{
-                    padding: "10px",
-                  }}
-                >
-                  <FacebookIcon />
-                </Fab>
-                <Fab
-                  variant="extended"
-                  sx={{
-                    padding: "10px",
-                  }}
-                >
-                  <GitHubIcon />
-                </Fab>
-              </Stack>
-            </Drawer>
+              <MenuIcon />
+            </IconButton>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorElNav}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "left",
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "left",
+              }}
+              open={Boolean(anchorElNav)}
+              onClose={handleCloseNavMenu}
+              sx={{
+                display: { xs: "block", md: "none" },
+                marginLeft: { md: "50px" },
+              }}
+            >
+              {pages.map((page) => (
+                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                  <Typography textAlign="center">{page}</Typography>
+                </MenuItem>
+              ))}
+            </Menu>
           </Box>
-        </NavToolbar>
+          <Box style={{ flexGrow: 1 }}>
+            <SearchBar />
+          </Box>
+          
+
+          <Box
+            sx={{
+              flexGrow: { xs: 0, md: 4 },
+              display: "flex",
+              justifyContent: "flex-end",
+            }}
+          >
+            <AccountMenu />
+          </Box>
+        </Toolbar>
       </Container>
     </AppBar>
   );
-};
-
+}
 export default Navbar;

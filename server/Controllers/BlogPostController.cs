@@ -7,6 +7,7 @@ using CloudinaryDotNet.Actions;
 using server.DTO;
 using AutoMapper;
 using MongoDB.Bson;
+using System.Net;
 
 namespace server.Controllers
 {
@@ -24,10 +25,45 @@ namespace server.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public static string ConvertImageUrlToBase64(string imageUrl)
         {
+            try
+            {
+                using (WebClient webClient = new WebClient())
+                {
+                    byte[] imageBytes = webClient.DownloadData(imageUrl);
+                    string base64String = Convert.ToBase64String(imageBytes);
+                    return base64String;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions (e.g., if the URL is invalid or the image cannot be downloaded)
+                Console.WriteLine("Error: " + ex.Message);
+                return null;
+            }
+        }
+
+        public static bool checkUrlImage(string image)
+        {
+            List<string> ImageExtensions = new List<string> { ".JPG", ".JPEG", ".JPE", ".BMP", ".GIF", ".PNG",".WEBP" };
+            if (ImageExtensions.Contains(Path.GetExtension(image).ToUpperInvariant()))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll([FromQuery] int limit)
+        {
+
+
             var result = await _blogPostService.GetAllAsync();
+            if (limit > 0)
+            {
+                result = result.Take(limit).ToList();
+            }
             return Ok(result);
         }
 
@@ -55,13 +91,13 @@ namespace server.Controllers
             {
                 return BadRequest(ModelState);
             }
-
+            //Đăng hình ảnh lên cloudinary
             using (var stream = new MemoryStream(Convert.FromBase64String(blogPost.Image.Substring(blogPost.Image.IndexOf(",") + 1))))
             {
                 var uploadParams = new ImageUploadParams
                 {
                     File = new FileDescription("image.jpg", stream),
-                    PublicId = Guid.NewGuid().ToString() // Optionally specify a public ID for the image
+                    PublicId = blogPost.PostID// Optionally specify a public ID for the image
                 };
 
                 var uploadResult = _cloudinary.Upload(uploadParams);
@@ -72,12 +108,12 @@ namespace server.Controllers
                 }
                 var newblogPost = new BlogPostDto
                 {
+                    PostID = blogPost.PostID,
                     Title = blogPost.Title,
                     Content = blogPost.Content,
                     UserID = blogPost.UserID,
                     CategoryID = blogPost.CategoryID,
                     Image = uploadResult.SecureUri.AbsoluteUri,
-                    CreatedAt = DateTime.Now
                 };
                 var blogPostMap = _mapper.Map<BlogPost>(newblogPost);
 
@@ -93,7 +129,7 @@ namespace server.Controllers
         [HttpGet("Post")]
         public async Task<IActionResult> GetBlogPostByUser([FromQuery] string userId)
         {
-            ObjectId  id = new ObjectId(userId);
+            ObjectId id = new ObjectId(userId);
             var result = await _blogPostService.GetBlogPostsByUser(id);
             if (!ModelState.IsValid)
             {
@@ -113,18 +149,60 @@ namespace server.Controllers
             return Ok(result);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(string id,[FromBody] BlogPost newBlogPost) {
-            var blogPost =  await _blogPostService.GetById(id);
+        [HttpPut("{postId}")]
+        public async Task<IActionResult> Update(string postId, [FromBody] BlogPost newBlogPost)
+        {
+            var blogPost = await _blogPostService.GetById(postId);
 
-            newBlogPost.UserID = blogPost.UserID;
-            newBlogPost.CategoryID = blogPost.CategoryID;
-            newBlogPost.Comments = blogPost.Comments;
-            newBlogPost.CreatedAt = blogPost.CreatedAt;
-             if (blogPost == null)
-                return NotFound();
-            await _blogPostService.UpdateBlogPost(id, newBlogPost);
-            return Ok(newBlogPost);
+            //Kiểm tra nếu như image vẫn như cũ(dạng link file(png, jpg, ...)) => convert to base64
+            if (checkUrlImage(newBlogPost.Image))
+            {
+                newBlogPost.Image = ConvertImageUrlToBase64(newBlogPost.Image);
+
+            }
+            using (var stream = new MemoryStream(Convert.FromBase64String(newBlogPost.Image.Substring(newBlogPost.Image.IndexOf(",") + 1))))
+            {
+                var uploadParams = new ImageUploadParams
+                {
+
+                    File = new FileDescription("edit.jpg", stream),
+                    PublicId = blogPost.PostID, // Optionally specify a public ID for the image
+                };
+                var deletionParams = new DeletionParams(blogPost.PostID);
+                _cloudinary.Destroy(deletionParams);
+                var uploadResult = _cloudinary.Upload(uploadParams);
+
+                if (uploadResult.Error != null)
+                {
+                    return BadRequest(uploadResult.Error.Message);
+                }
+                if (newBlogPost.UserID != blogPost.UserID)
+                {
+                    return Forbid();
+                }
+                if (blogPost == null)
+                    return NotFound();
+                var resultPostNew = new BlogPost
+                {
+                    PostID = blogPost.PostID,
+                    Comments = blogPost.Comments,
+                    CreatedAt = blogPost.CreatedAt,
+                    Image = uploadResult.SecureUri.AbsoluteUri,
+                    Title = newBlogPost.Title,
+                    Content = newBlogPost.Content,
+                    CategoryID = newBlogPost.CategoryID,
+                    UserID = blogPost.UserID
+
+                };
+
+                await _blogPostService.UpdateBlogPost(postId, blogPost.UserID, resultPostNew);
+                return Ok(resultPostNew);
+
+            }
+
+
+
+
         }
 
         [HttpDelete("{id}")]

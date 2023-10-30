@@ -1,11 +1,10 @@
 "use client";
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
+import { Box, CircularProgress, Container, Grid } from "@mui/material";
+import Post from "@/components/Post/Post";
 import useSWR from "swr";
 import { useSearchParams } from "next/navigation";
-import { Box, Button, CircularProgress, Container } from "@mui/material";
-import MyPost from "@/components/MyPost/MyPost";
 import { styled } from "@mui/material/styles";
-import Link from "next/link";
 
 const Root = styled("div")(({ theme }) => ({
   padding: theme.spacing(1),
@@ -19,25 +18,20 @@ const Root = styled("div")(({ theme }) => ({
     marginTop: "30px",
   },
 }));
-export const metadata = {
-  title: "T-BLOG",
-  description: "T-BLOG tin tức cực shock",
-};
-const Profile = () => {
-  const searchParams = useSearchParams();
-  const userParams = searchParams.get("id");
+const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
-  const fetcher = (...args) => fetch(...args).then((res) => res.json());
-
-  const { data, error, isLoading } = useSWR(
-    `http://localhost:5167/api/BlogPost/post/?userId=${userParams}`,
+const Search = () => {
+  const search = useSearchParams();
+  const searchQuery = search.get("q");
+  const { data, isLoading, error } = useSWR(
+    `http://localhost:5167/search?q=${searchQuery}`,
     fetcher
   );
 
+  console.log(data);
   return (
     <Root>
       <Container maxWidth="lg">
-        <Link href={"/write"}><Button variant="outlined">Viết bài</Button></Link>
         <Box maxWidth="lg" minHeight={"80vh"}>
           {isLoading ? (
             <Box
@@ -51,9 +45,7 @@ const Profile = () => {
               <CircularProgress />
             </Box>
           ) : (
-            data?.map((post) => (
-              <MyPost post={post} userParams={userParams} key={post.postID} />
-            ))
+            data.map((post) => <Post post={post} key={post.postID} />)
           )}
         </Box>
       </Container>
@@ -61,4 +53,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default Search;

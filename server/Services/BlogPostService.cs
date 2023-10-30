@@ -41,6 +41,7 @@ namespace server.Services
             BsonDocument.Parse("{ $lookup: { from: 'categories', localField: 'CategoryID', foreignField: '_id', as: 'blogpost_category' } }"),
             BsonDocument.Parse("{ $unwind: '$blogpost_category' }"),
             BsonDocument.Parse("{ $project: { Title: 1, Content: 1, Username :'$blogpost_users.Username', UserID: 1 , CreatedAt : 1, CategoryName : '$blogpost_category.CategoryName', Image: 1, Comments: 1,CategoryID: 1, Avatar :'$blogpost_users.Avatar'} }")
+            // BsonDocument.Parse("{ $limit: " + limit + " }")
         };
 
       var aggregationResult = _blogPostCollection.Aggregate<BsonDocument>(pipeline);
@@ -141,8 +142,8 @@ namespace server.Services
 
     }
 
-    public async Task UpdateBlogPost(string id, BlogPost blogPost) =>
-        await _blogPostCollection.ReplaceOneAsync(blogPost => blogPost.PostID == id, blogPost);
+    public async Task UpdateBlogPost(string postId, string userId, BlogPost blogPost) =>
+        await _blogPostCollection.ReplaceOneAsync(blogPost => blogPost.PostID == postId && blogPost.UserID == userId, blogPost);
 
     public async Task DeleteAysnc(string id) =>
        await _blogPostCollection.DeleteOneAsync(a => a.PostID == id);

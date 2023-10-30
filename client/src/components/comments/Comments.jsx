@@ -7,6 +7,7 @@ import useSWR from "swr";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import useAxios from "@/untils/useAxios";
+import dayjs from "dayjs";
 
 const fetcher = async (url) => {
   const res = await fetch(url);
@@ -23,7 +24,7 @@ const fetcher = async (url) => {
 
 const Comments = ({ postSlug }) => {
   const { authTokens } = useContext(AuthContext);
-  const userId = authTokens.userId;
+  const userId = authTokens?.userId;
   let api = useAxios();
 
   const { data, mutate, isLoading } = useSWR(
@@ -34,7 +35,8 @@ const Comments = ({ postSlug }) => {
 
   const [desc, setDesc] = useState("");
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     const options = {
       method: "post",
       data: {
@@ -46,9 +48,11 @@ const Comments = ({ postSlug }) => {
       url: "http://localhost:5167/api/Comment",
     };
 
-    const { data } = await api(options);
-
-    console.log(data);
+    if(event.key === "Enter") {
+      const { data } = await api(options)
+    }
+    const { data } = await api(options)
+    setDesc("")
     mutate();
   };
 
@@ -56,18 +60,20 @@ const Comments = ({ postSlug }) => {
     <div className={styles.container}>
       <h1 className={styles.title}>Comments</h1>
       {authTokens ? (
-        <div className={styles.write}>
-          <textarea
-            placeholder="write a comment..."
-            className={styles.input}
-            onChange={(e) => setDesc(e.target.value)}
-          />
-          <button className={styles.button} onClick={handleSubmit}>
-            Send
-          </button>
-        </div>
+        <form onSubmit={handleSubmit}>
+          <div className={styles.write}>
+            <input
+              placeholder="write a comment..."
+              className={styles.input}
+              onChange={(e) => setDesc(e.target.value)}
+            />
+            <button className={styles.button} type="submit">
+              Send
+            </button>
+          </div>
+        </form>
       ) : (
-        <Link href="/login">Login to write a comment</Link>
+        <Link href="/dashboard/login">Login to write a comment</Link>
       )}
       <div className={styles.comments}>
         {isLoading
@@ -85,8 +91,12 @@ const Comments = ({ postSlug }) => {
                     />
                   )}
                   <div className={styles.userInfo}>
-                    <span className={styles.username}>{item.user.username}</span>
-                    <span className={styles.date}>{item.comment.createdAt}</span>
+                    <span className={styles.username}>
+                      {item.user.username}
+                    </span>
+                    <span className={styles.date}>
+                      {dayjs(item.comment.createdAt).format("DD/MM/YYYY ")}
+                    </span>
                   </div>
                 </div>
                 <p className={styles.desc}>{item.comment.commentText}</p>

@@ -1,29 +1,24 @@
 "use client";
 import React, { useContext } from "react";
-import styles from "./page.module.css";
-// import Link from "next/link";
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
-import Paper from '@mui/material/Paper';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Link from "next/link";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import CssBaseline from "@mui/material/CssBaseline";
+import TextField from "@mui/material/TextField";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+import Paper from "@mui/material/Paper";
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import Typography from "@mui/material/Typography";
 
 import { AuthContext } from "../../../../../context/AuthContext";
-const defaultTheme = createTheme();
 const Login = () => {
   let { loginUser } = useContext(AuthContext);
 
   return (
-    <ThemeProvider theme={defaultTheme}>
-      <Grid container component="main" sx={{ height: '100vh' }}>
+      <Grid container component="main" sx={{ height: "100vh" }}>
         <CssBaseline />
         <Grid
           item
@@ -31,12 +26,15 @@ const Login = () => {
           sm={4}
           md={7}
           sx={{
-            backgroundImage: 'url(https://source.unsplash.com/random?wallpapers)',
-            backgroundRepeat: 'no-repeat',
+            backgroundImage:
+              "url(https://source.unsplash.com/random?wallpapers)",
+            backgroundRepeat: "no-repeat",
             backgroundColor: (t) =>
-              t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
+              t.palette.mode === "light"
+                ? t.palette.grey[50]
+                : t.palette.grey[900],
+            backgroundSize: "cover",
+            backgroundPosition: "center",
           }}
         />
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
@@ -44,18 +42,23 @@ const Login = () => {
             sx={{
               my: 8,
               mx: 4,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
             }}
           >
-            <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+            <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
-              Sign in
+              Đăng Nhập
             </Typography>
-            <Box component="form" onSubmit={loginUser} noValidate sx={{ mt: 1 }}>
+            <Box
+              component="form"
+              onSubmit={loginUser}
+              noValidate
+              sx={{ mt: 1 }}
+            >
               <TextField
                 margin="normal"
                 required
@@ -86,17 +89,21 @@ const Login = () => {
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
               >
-                Sign In
+                Đăng nhập
               </Button>
               <Grid container>
                 <Grid item xs>
-                  <Link href="#" variant="body2">
-                    Forgot password?
+                  <Link href="/dashboard/register">
+                    <Typography sx={{textDecoration :"underline", color : "blue"}} variant="body2">
+                      {"Quên mật khẩu"}
+                    </Typography>
                   </Link>
                 </Grid>
                 <Grid item>
-                  <Link href="#" variant="body2">
-                    {"Don't have an account? Sign Up"}
+                  <Link href="/dashboard/register">
+                    <Typography variant="body2"  sx={{textDecoration :"underline", color : "blue"}}>
+                      {"Bạn chưa có tài khoản? Đăng ký"}
+                    </Typography>
                   </Link>
                 </Grid>
               </Grid>
@@ -105,15 +112,7 @@ const Login = () => {
           </Box>
         </Grid>
       </Grid>
-    </ThemeProvider>
-    // <div>
-    //   <form action="" onSubmit={loginUser}>
-    //     <input type="text" name="username" placeholder="Enter Username" />
-    //     <input type="password" name="password" placeholder="Enter Password" />
-    //     <input type="submit"/>
-    //   </form>
-    //   <Link href={"/dashboard/register"}>Register</Link>
-    // </div>
+    
   );
 };
 

@@ -14,7 +14,7 @@ namespace server.Services
         Task<BlogPost> GetById(string postId);
 
         Task<IEnumerable<BlogPost>> GetBlogPostsByUser(ObjectId userId);
-        Task UpdateBlogPost(string id,BlogPost blogPost);
+        Task UpdateBlogPost(string postId, string userId,BlogPost blogPost);
         Task DeleteAysnc(string id);
     }
 }

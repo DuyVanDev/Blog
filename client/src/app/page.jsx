@@ -1,25 +1,62 @@
-
 import Image from "next/image";
+import Hero from "../../public/banner.png";
+import {
+  Avatar,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  CardMedia,
+  Container,
+  Grid,
+  IconButton,
+  Paper,
+  Typography,
+} from "@mui/material";
 import styles from "./page.module.css";
-import Hero from "public/hero.png";
-import Button from "@/components/Button/Button";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import Link from "next/link";
+import RecentlyPost from "@/components/RecentlyPost/RecentlyPost";
+import AdsSpace from "@/components/AdsSpace/AdsSpace";
 
 export default function Home() {
   return (
-    <div className={styles.container}>
-      <div className={styles.item}>
-        <h1 className={styles.title}>
-          Better Design for your digital products
-        </h1>
-        <p className={styles.desc}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Error ullam
-          assumenda quisquam quae quibusdam debitis.
-        </p>
-        <Button url="/portfolio" text="See Our Works"/>
-      </div>
-      <div className={styles.item}>
-        <Image src={Hero} className={styles.img} alt="asd" />
-      </div>
-    </div>
+    <Container maxWidth="lg" sx={{ marginTop: "20px" }}>
+      <Box
+        sx={{
+          position: "relative",
+        }}
+      >
+        <Image
+          className={styles.img}
+          src={Hero} // Path to your image inside the public directory
+          alt="Background Image"
+        />
+        <Box
+          sx={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            width: "100%",
+            borderRadius: "8px",
+
+            height: "400px",
+            backgroundColor: "rgba(0, 0, 0, 0.5)", // Add a semi-transparent overlay if desired
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {/* Your content goes here */}
+          <h1>Hello, Material-UI Background Image!</h1>
+        </Box>
+      </Box>
+      <AdsSpace />
+      <RecentlyPost />
+      <AdsSpace />
+
+    </Container>
   );
 }
