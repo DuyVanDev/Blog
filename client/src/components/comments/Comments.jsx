@@ -8,6 +8,7 @@ import { useContext, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import useAxios from "@/untils/useAxios";
 import dayjs from "dayjs";
+import { Avatar, ListItemAvatar } from "@mui/material";
 
 const fetcher = async (url) => {
   const res = await fetch(url);
@@ -31,10 +32,9 @@ const Comments = ({ postSlug }) => {
     `http://localhost:5167/api/Comment/?postId=${postSlug}`,
     fetcher
   );
+
+  const [comment, setComment] = useState("");
   console.log(data);
-
-  const [desc, setDesc] = useState("");
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     const options = {
@@ -42,17 +42,19 @@ const Comments = ({ postSlug }) => {
       data: {
         postID: postSlug,
         userID: userId,
-        commentText: desc,
+        commentText: comment,
       },
 
       url: "http://localhost:5167/api/Comment",
     };
 
-    if(event.key === "Enter") {
-      const { data } = await api(options)
+    if (event.key === "Enter") {
+      const { data } = await api(options);
     }
-    const { data } = await api(options)
-    setDesc("")
+    const { data } = await api(options);
+    if (data) {
+      setComment("");
+    }
     mutate();
   };
 
@@ -65,7 +67,8 @@ const Comments = ({ postSlug }) => {
             <input
               placeholder="write a comment..."
               className={styles.input}
-              onChange={(e) => setDesc(e.target.value)}
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
             />
             <button className={styles.button} type="submit">
               Send
@@ -81,15 +84,9 @@ const Comments = ({ postSlug }) => {
           : data?.map((item) => (
               <div className={styles.comment} key={item.comment.commentID}>
                 <div className={styles.user}>
-                  {item?.user?.avatar && (
-                    <Image
-                      src={item.user.avatar}
-                      alt=""
-                      width={50}
-                      height={50}
-                      className={styles.image}
-                    />
-                  )}
+                  <ListItemAvatar>
+                    <Avatar alt={item.user.username} src={data.avatar} />
+                  </ListItemAvatar>
                   <div className={styles.userInfo}>
                     <span className={styles.username}>
                       {item.user.username}

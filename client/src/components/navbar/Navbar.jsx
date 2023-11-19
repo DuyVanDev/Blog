@@ -17,7 +17,7 @@ import AccountMenu from "../accountmenu/AccountMenu";
 import SearchBar from "../searchbar/SearchBar";
 import Link from "next/link";
 
-const pages = ["Products", "Pricing", "Blog"];
+const pages = ["Home", "Contact", "Write", "About"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 function Navbar() {
@@ -43,7 +43,15 @@ function Navbar() {
     <AppBar position="static" style={{ background: "transparent" }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Link href={"/"} style={{ flexGrow: 1 , display : "flex", justifyContent: "flex-start", alignItems : "center"}}>
+          <Link
+            href={"/"}
+            style={{
+              flexGrow: 1,
+              display: "flex",
+              justifyContent: "flex-start",
+              alignItems: "center",
+            }}
+          >
             <AdbIcon
               sx={{
                 display: { xs: "none", md: "flex" },
@@ -112,10 +120,16 @@ function Navbar() {
               ))}
             </Menu>
           </Box>
+
+          <Box sx={{display : {xs: "none", md: "flex"}, alignItems : "center", justifyContent : "center", gap : 12, flexBasis : "70%" }}>
+            {pages.map((page) => (
+                <Typography  fontSize={"12px"} color={"text.primary"} textAlign="center">{page}</Typography>
+            ))}
+          </Box>
+
           <Box style={{ flexGrow: 1 }}>
             <SearchBar />
           </Box>
-          
 
           <Box
             sx={{

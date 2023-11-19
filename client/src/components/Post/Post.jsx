@@ -9,38 +9,9 @@ import {
   Grid,
   Typography,
 } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
 import {  createTheme } from "@mui/material/styles";
 // import {MoreVertIcon} from '@mui/icons-material';
 import dayjs from "dayjs";
-const useStyles = makeStyles((theme) => ({
-  blogsContainer: {
-    // paddingTop: theme.spacing(3),
-  },
-  blogTitle: {
-    fontWeight: 800,
-    // paddingBottom: theme.spacing(3),
-  },
-  card: {
-    maxWidth: "100%",
-  },
-  media: {
-    height: 240,
-  },
-  cardActions: {
-    display: "flex",
-    margin: "0 10px",
-    justifyContent: "space-between",
-  },
-  author: {
-    display: "flex",
-  },
-  paginationContainer: {
-    color: "white",
-    display: "flex",
-    justifyContent: "center",
-  },
-}));
 
 const Post = (props) => {
   const theme = createTheme();
@@ -79,7 +50,7 @@ const Post = (props) => {
   };
   const date = new Date();
   return (
-    <Link href={`blog/${post.postID}`}>
+    <Link href={`blog/${post.postID}`} target="_blank">
     <Grid container spacing={2} mb={6}  >
       <Grid item xs={12} md={4} >
         <Box

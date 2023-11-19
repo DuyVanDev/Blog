@@ -28,7 +28,6 @@ export const AuthProvider = ({ children }) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          // 'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: JSON.stringify({
           username: e.target.username.value,
@@ -36,7 +35,6 @@ export const AuthProvider = ({ children }) => {
         }),
       });
       var data = await response.json();
-      // let data = await response.json();
       if (response.status === 200 && typeof window !== "undefined") {
         setAuthTokens(data.data);
         setUser(jwt_decode(data.data.accessToken));

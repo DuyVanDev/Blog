@@ -22,7 +22,7 @@ import AdsSpace from "@/components/AdsSpace/AdsSpace";
 
 export default function Home() {
   return (
-    <Container maxWidth="lg" sx={{ marginTop: "20px" }}>
+    <Container maxWidth="md" sx={{ marginTop: "20px" }}>
       <Box
         sx={{
           position: "relative",
@@ -50,7 +50,7 @@ export default function Home() {
           }}
         >
           {/* Your content goes here */}
-          <h1>Hello, Material-UI Background Image!</h1>
+          <h1 style={{color: "white"}}>TBlog -Tin tức cực shock</h1>
         </Box>
       </Box>
       <AdsSpace />

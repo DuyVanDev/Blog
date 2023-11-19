@@ -1,18 +1,23 @@
-import React from 'react'
-import styles from './page.module.css'
-import Image from 'next/image'
+import React from "react";
+import Image from "next/image";
+import { Box, Container, Grid, Typography } from "@mui/material";
 const Footer = () => {
+  const footers = ["Contact", "Company", "Phone", "City"];
   return (
-    <div className={styles.container}>
-      <div>©2023 Lamamia. All rights reserved.</div>
-      <div className={styles.social}>
-        <Image src="/1.png" width={15} height={15} className={styles.icon} alt="Duy FB"/>
-        <Image src="/2.png" width={15} height={15} className={styles.icon} alt="Duy Is"/>
-        <Image src="/3.png" width={15} height={15} className={styles.icon} alt="Duy"/>
-        <Image src="/4.png" width={15} height={15} className={styles.icon} alt="Duy"/>
-      </div>
-    </div>
-  )
-}
+    <Box sx={{ bgcolor: '#F6F6F7', p: 6 }} component="footer">
+    <Typography variant="h6" align="center" gutterBottom>
+      Footer
+    </Typography>
+    <Typography
+      variant="subtitle1"
+      align="center"
+      color="text.secondary"
+      component="p"
+    >
+      Something here to give the footer a purpose!
+    </Typography>
+  </Box>
+  );
+};
 
-export default Footer
+export default Footer;

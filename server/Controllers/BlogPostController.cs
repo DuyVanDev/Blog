@@ -46,7 +46,7 @@ namespace server.Controllers
 
         public static bool checkUrlImage(string image)
         {
-            List<string> ImageExtensions = new List<string> { ".JPG", ".JPEG", ".JPE", ".BMP", ".GIF", ".PNG",".WEBP" };
+            List<string> ImageExtensions = new List<string> { ".JPG", ".JPEG", ".JPE", ".BMP", ".GIF", ".PNG", ".WEBP" };
             if (ImageExtensions.Contains(Path.GetExtension(image).ToUpperInvariant()))
             {
                 return true;
@@ -65,6 +65,17 @@ namespace server.Controllers
                 result = result.Take(limit).ToList();
             }
             return Ok(result);
+        }
+
+        [HttpGet("pagination")]
+        public async Task<IActionResult> GetItems(int page = 1, int pageSize = 10)
+        {
+           
+            // Logic to retrieve paginated data from your data source
+            var paginatedData = await _blogPostService.GetPaginatedData(page, pageSize);
+
+            // Return paginated data in the response
+            return Ok(paginatedData);
         }
 
         [HttpGet("{postId}")]
@@ -148,9 +159,9 @@ namespace server.Controllers
             }
             return Ok(result);
         }
-
+        [Authorize]
         [HttpPut("{postId}")]
-        public async Task<IActionResult> Update(string postId, [FromBody] BlogPost newBlogPost)
+        public async Task<IActionResult> Update(string postId, [FromForm] BlogPostDto newBlogPost)
         {
             var blogPost = await _blogPostService.GetById(postId);
 
@@ -182,10 +193,9 @@ namespace server.Controllers
                 }
                 if (blogPost == null)
                     return NotFound();
-                var resultPostNew = new BlogPost
+                var resultPostNew = new BlogPostDto
                 {
                     PostID = blogPost.PostID,
-                    Comments = blogPost.Comments,
                     CreatedAt = blogPost.CreatedAt,
                     Image = uploadResult.SecureUri.AbsoluteUri,
                     Title = newBlogPost.Title,
@@ -194,14 +204,13 @@ namespace server.Controllers
                     UserID = blogPost.UserID
 
                 };
+                 var blogPostMap = _mapper.Map<BlogPost>(resultPostNew);
+                 
 
-                await _blogPostService.UpdateBlogPost(postId, blogPost.UserID, resultPostNew);
+                await _blogPostService.UpdateBlogPost(postId, blogPost.UserID, blogPostMap);
                 return Ok(resultPostNew);
 
             }
-
-
-
 
         }
 
