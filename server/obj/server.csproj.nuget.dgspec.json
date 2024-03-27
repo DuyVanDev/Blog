@@ -60,6 +60,10 @@
               "target": "Package",
               "version": "[7.0.0, )"
             },
+            "Microsoft.AspNetCore.WebSockets": {
+              "target": "Package",
+              "version": "[2.2.1, )"
+            },
             "MongoDB.Driver": {
               "target": "Package",
               "version": "[2.21.0, )"

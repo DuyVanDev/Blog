@@ -16,10 +16,12 @@ namespace server.Controllers
     public class BlogPostController : ControllerBase
     {
         private readonly IBlogPostService _blogPostService;
+        private readonly WebSocketNotificationService _notificationService;
         private readonly IMapper _mapper;
         private readonly Cloudinary _cloudinary;
-        public BlogPostController(IBlogPostService blogPostService, Cloudinary cloudinary, IMapper mapper)
+        public BlogPostController(IBlogPostService blogPostService, Cloudinary cloudinary, IMapper mapper,WebSocketNotificationService notificationService)
         {
+             _notificationService = notificationService;
             _blogPostService = blogPostService;
             _cloudinary = cloudinary;
             _mapper = mapper;
@@ -70,7 +72,7 @@ namespace server.Controllers
         [HttpGet("pagination")]
         public async Task<IActionResult> GetItems(int page = 1, int pageSize = 10)
         {
-           
+
             // Logic to retrieve paginated data from your data source
             var paginatedData = await _blogPostService.GetPaginatedData(page, pageSize);
 
@@ -159,7 +161,6 @@ namespace server.Controllers
             }
             return Ok(result);
         }
-        [Authorize]
         [HttpPut("{postId}")]
         public async Task<IActionResult> Update(string postId, [FromForm] BlogPostDto newBlogPost)
         {
@@ -204,8 +205,8 @@ namespace server.Controllers
                     UserID = blogPost.UserID
 
                 };
-                 var blogPostMap = _mapper.Map<BlogPost>(resultPostNew);
-                 
+                var blogPostMap = _mapper.Map<BlogPost>(resultPostNew);
+
 
                 await _blogPostService.UpdateBlogPost(postId, blogPost.UserID, blogPostMap);
                 return Ok(resultPostNew);
@@ -223,5 +224,39 @@ namespace server.Controllers
             await _blogPostService.DeleteAysnc(id);
             return Ok("deleted successfully");
         }
+
+        [HttpPut("like")]
+        [Authorize]
+
+        public async Task<IActionResult> LikePost([FromQuery]string postId, [FromQuery]string userId)
+        {
+            await _blogPostService.LikePost(postId,userId);
+            await _notificationService.NotifyLikesUpdateAsync(postId);
+            return Ok("OK");
+            
+        }
+
+
+        [HttpPost("approve")]
+
+        public async Task<IActionResult> Approve(string postId)
+        {
+            await _blogPostService.Approve(postId);
+            return Ok("OK");
+            
+        }
+
+        [HttpGet("popularPost")]
+
+        public async Task<IActionResult> GetPopularPost()
+        {
+            var result = await _blogPostService.GetPopularPost();
+            return Ok(result);
+            
+        }
+
+
+
+        
     }
 }

@@ -55,3 +55,4 @@ E:\duanReact\BlogPost\server\bin\Debug\net7.0\CloudinaryDotNet.dll
 E:\duanReact\BlogPost\server\bin\Debug\net7.0\Newtonsoft.Json.dll
 E:\duanReact\BlogPost\server\bin\Debug\net7.0\AutoMapper.dll
 E:\duanReact\BlogPost\server\bin\Debug\net7.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+E:\duanReact\BlogPost\server\bin\Debug\net7.0\System.Net.WebSockets.WebSocketProtocol.dll

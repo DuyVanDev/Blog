@@ -5,6 +5,10 @@ using Microsoft.IdentityModel.Tokens;
 using server.Models;
 using server.Services;
 using CloudinaryDotNet;
+using Microsoft.AspNetCore.WebSockets;
+using System.Net.WebSockets;
+using System.Net;
+// using server.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<MongoDBSettings>(
@@ -26,11 +30,13 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IBlogPostService, BlogPostService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
+builder.Services.AddScoped<IFriendService, FriendService>();
 
 builder.Services.AddSingleton<IDictionary<string, string>>(opts => new Dictionary<string, string>());
-
+builder.Services.AddSingleton<WebSocketNotificationService>();
 
 builder.Services.Configure<AppSetting>(builder.Configuration.GetSection("AppSettings"));
+builder.Services.AddSingleton<WebSocketHandler>();
 
 var secretKey = builder.Configuration.GetValue<string>("Appsettings:SecretKey");
 var key = Encoding.ASCII.GetBytes(secretKey);
@@ -64,7 +70,7 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddCors(p => p.AddPolicy("corspolicy", build =>
 {
-    build.AllowAnyHeader().AllowCredentials().AllowAnyMethod().WithOrigins("http://localhost:3000");
+    build.AllowAnyHeader().AllowCredentials().AllowAnyMethod().WithOrigins("http://localhost:5173","http://localhost:3000");
 }));
 
 
@@ -81,16 +87,43 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
+    app.UseMiddleware<WebSocketMiddleware>();
+
     app.UseSwaggerUI();
 }
-
 app.UseRouting();
+app.UseWebSockets();
+// app.UseMiddleware<WebSocketMiddleware>();
+app.Map("/ws", async context =>
+{
+    if (context.WebSockets.IsWebSocketRequest)
+    {
+        using var ws = await context.WebSockets.AcceptWebSocketAsync();
+        while (true)
+        {
+            var message = "The current time is: " + DateTime.Now.ToString("HH:mm:ss");
+            var bytes = Encoding.UTF8.GetBytes(message);
+            var arraySegment = new ArraySegment<byte>(bytes, 0, bytes.Length);
+            if (ws.State == WebSocketState.Open)
+                await ws.SendAsync(arraySegment,
+                                    WebSocketMessageType.Text,
+                                    true,
+                                    CancellationToken.None);
+            else if (ws.State == WebSocketState.Closed || ws.State == WebSocketState.Aborted)
+            {
+                break;
+            }
+            Thread.Sleep(1000);
 
+        }
+    }
+    else
+    {
+        context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+    }
+});
 app.UseCors("corspolicy");
-// app.UseEndpoints(endpoints =>
-// {
-//     endpoints.MapHub<ChatHub>("/chat");
-// });
+
 
 
 app.UseHttpsRedirection();

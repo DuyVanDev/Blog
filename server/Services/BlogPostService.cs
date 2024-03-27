@@ -1,6 +1,9 @@
+using System.Net.WebSockets;
+using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
+using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using server.DTO;
@@ -40,7 +43,7 @@ namespace server.Services
             BsonDocument.Parse("{ $unwind: '$blogpost_users' }"),
             BsonDocument.Parse("{ $lookup: { from: 'categories', localField: 'CategoryID', foreignField: '_id', as: 'blogpost_category' } }"),
             BsonDocument.Parse("{ $unwind: '$blogpost_category' }"),
-            BsonDocument.Parse("{ $project: { Title: 1, Content: 1, Username :'$blogpost_users.Username', UserID: 1 , CreatedAt : 1, CategoryName : '$blogpost_category.CategoryName', Image: 1, Comments: 1,CategoryID: 1, Avatar :'$blogpost_users.Avatar'} }")
+            BsonDocument.Parse("{ $project: { Title: 1, Content: 1,Likes : 1, Username :'$blogpost_users.Username', UserID: 1 , CreatedAt : 1, CategoryName : '$blogpost_category.CategoryName' , Color : '$blogpost_category.Color',isApprove : 1,LikedBy: 1, Image: 1, Comments: 1,CategoryID: 1, Avatar :'$blogpost_users.Avatar'} }")
             // BsonDocument.Parse("{ $limit: " + limit + " }")
         };
 
@@ -69,7 +72,7 @@ namespace server.Services
             BsonDocument.Parse("{ $unwind: '$blogpost_users' }"),
             BsonDocument.Parse("{ $lookup: { from: 'categories', localField: 'CategoryID', foreignField: '_id', as: 'blogpost_category' } }"),
             BsonDocument.Parse("{ $unwind: '$blogpost_category' }"),
-            BsonDocument.Parse("{ $project: { Title: 1, Content: 1, Username :'$blogpost_users.Username', UserID: 1 , CreatedAt : 1, CategoryName : '$blogpost_category.CategoryName', Image: 1, Comments: 1,CategoryID: 1, Avatar :'$blogpost_users.Avatar'} }")
+            BsonDocument.Parse("{ $project: { Title: 1, Content: 1 ,Likes : 1, Username :'$blogpost_users.Username', UserID: 1 , LikedBy: 1,CreatedAt : 1 , CategoryName : '$blogpost_category.CategoryName' , Color : '$blogpost_category.Color', isApprove : 1,  Image: 1, Comments: 1,CategoryID: 1, Avatar :'$blogpost_users.Avatar'} }")
         };
 
       var aggregationResult = _blogPostCollection.Aggregate<BsonDocument>(pipeline);
@@ -95,7 +98,7 @@ namespace server.Services
             BsonDocument.Parse("{ $unwind: '$blogpost_users' }"),
             BsonDocument.Parse("{ $lookup: { from: 'categories', localField: 'CategoryID', foreignField: '_id', as: 'blogpost_category' } }"),
             BsonDocument.Parse("{ $unwind: '$blogpost_category' }"),
-            BsonDocument.Parse("{ $project: { Title: 1, Content: 1, Username :'$blogpost_users.Username', UserID: 1 , CreatedAt : 1, CategoryName : '$blogpost_category.CategoryName', Image: 1, Comments: 1,CategoryID: 1, Avatar :'$blogpost_users.Avatar'} }")
+            BsonDocument.Parse("{ $project: { Title: 1, Content: 1 ,Likes : 1, Username :'$blogpost_users.Username', UserID: 1 , LikedBy: 1,CreatedAt : 1 , CategoryName : '$blogpost_category.CategoryName' , Color : '$blogpost_category.Color',isApprove : 1,  Image: 1, Comments: 1,CategoryID: 1, Avatar :'$blogpost_users.Avatar'} }")
             // BsonDocument.Parse("{ $limit: " + limit + " }")
         };
 
@@ -112,13 +115,13 @@ namespace server.Services
         .Skip((page - 1) * pageSize)
         .Take(pageSize)
         .ToList();
-        var total = GetTotalPost();
+      var total = GetTotalPost();
 
       return new PaginatedDataModel
-        {
-            Data = blogPosts,
-            TotalCount = total
-        };
+      {
+        Data = blogPosts,
+        TotalCount = total
+      };
     }
 
 
@@ -135,7 +138,7 @@ namespace server.Services
             BsonDocument.Parse("{ $unwind: '$blogpost_users' }"),
             BsonDocument.Parse("{ $lookup: { from: 'categories', localField: 'CategoryID', foreignField: '_id', as: 'blogpost_category' } }"),
             BsonDocument.Parse("{ $unwind: '$blogpost_category' }"),
-            BsonDocument.Parse("{ $project: { Title: 1, Content: 1, Username :'$blogpost_users.Username', UserID: 1 , CreatedAt : 1, CategoryName : '$blogpost_category.CategoryName', Image: 1, Comments: 1,CategoryID: 1, Avatar :'$blogpost_users.Avatar'} }")
+            BsonDocument.Parse("{ $project: { Title: 1, Content: 1 ,Likes : 1, isApprove : 1,Username :'$blogpost_users.Username',LikedBy: 1, UserID: 1 , CreatedAt : 1 , CategoryName : '$blogpost_category.CategoryName' , Color : '$blogpost_category.Color',  Image: 1, Comments: 1,CategoryID: 1, Avatar :'$blogpost_users.Avatar'} }")
 
         };
 
@@ -162,7 +165,7 @@ namespace server.Services
             BsonDocument.Parse("{ $unwind: '$blogpost_users' }"),
             BsonDocument.Parse("{ $lookup: { from: 'categories', localField: 'CategoryID', foreignField: '_id', as: 'blogpost_category' } }"),
             BsonDocument.Parse("{ $unwind: '$blogpost_category' }"),
-             BsonDocument.Parse("{ $project: { Title: 1, Content: 1, Username :'$blogpost_users.Username', UserID: 1 , CreatedAt : 1, CategoryName : '$blogpost_category.CategoryName', Image: 1, Comments: 1,CategoryID: 1, Avatar :'$blogpost_users.Avatar'} }")
+             BsonDocument.Parse("{ $project: { Title: 1, Content: 1 ,Likes : 1, Username :'$blogpost_users.Username', isApprove : 1,UserID: 1 , LikedBy: 1,CreatedAt : 1 , CategoryName : '$blogpost_category.CategoryName' , Color : '$blogpost_category.Color',  Image: 1, Comments: 1,CategoryID: 1, Avatar :'$blogpost_users.Avatar'} }")
         };
 
       var aggregationResult = _blogPostCollection.Aggregate<BsonDocument>(pipeline);
@@ -180,7 +183,8 @@ namespace server.Services
 
     public int GetTotalPost()
     {
-      long count = _blogPostCollection.CountDocuments(new BsonDocument());
+      var filter = Builders<BlogPost>.Filter.Eq("isApprove", true);
+      long count = _blogPostCollection.CountDocuments(filter);
       int totalCount = Convert.ToInt32(count);
       return totalCount;
     }
@@ -191,6 +195,72 @@ namespace server.Services
     public async Task DeleteAysnc(string id) =>
        await _blogPostCollection.DeleteOneAsync(a => a.PostID == id);
 
+    public async Task LikePost(string postId, string userId)
+    {
+      var post = _blogPostCollection.Find<BlogPost>(p => p.PostID == postId).FirstOrDefault();
 
+
+
+
+      if (post.LikedBy.Contains(userId))
+      {
+        // Hủy like nếu đã like trước đó
+        post.Likes--;
+        post.LikedBy.Remove(userId);
+      }
+      else
+      {
+        // Thêm like nếu chưa like
+        post.Likes++;
+        post.LikedBy.Add(userId);
+      }
+
+      _blogPostCollection.ReplaceOne(p => p.PostID == postId, post);
+
+
+    }
+
+    public async Task Approve(string postId)
+    {
+      // var post = _blogPostCollection.Find<BlogPost>(p => p.PostID == postId).FirstOrDefault();
+      var filter = Builders<BlogPost>.Filter.Eq(post => post.PostID, postId);
+      var update = Builders<BlogPost>.Update.Set(post => post.isApprove, true);
+      var result = _blogPostCollection.UpdateOne(filter, update);
+    }
+
+
+    public async Task<IEnumerable<BlogPost>> GetPopularPost()
+    {
+
+      var pipeline = new List<BsonDocument>
+        {
+            BsonDocument.Parse("{ $lookup: { from: 'users', localField: 'UserID', foreignField: '_id', as: 'blogpost_users' } }"),
+            BsonDocument.Parse("{ $unwind: '$blogpost_users' }"),
+            BsonDocument.Parse("{ $lookup: { from: 'categories', localField: 'CategoryID', foreignField: '_id', as: 'blogpost_category' } }"),
+            BsonDocument.Parse("{ $unwind: '$blogpost_category' }"),
+            BsonDocument.Parse("{ $project: { Title: 1, Content: 1 ,Likes : 1, Username :'$blogpost_users.Username', UserID: 1 , CreatedAt : 1 , CategoryName : '$blogpost_category.CategoryName' , Color : '$blogpost_category.Color',isApprove : 1,LikedBy: 1, Image: 1, Comments: 1,CategoryID: 1, Avatar :'$blogpost_users.Avatar'} }")
+        };
+
+      var aggregationResult = _blogPostCollection.Aggregate<BsonDocument>(pipeline);
+
+      var blogPosts = new List<BlogPost>();
+
+      foreach (var data in aggregationResult.ToEnumerable())
+      {
+        var blogPost = BsonSerializer.Deserialize<BlogPost>(data);
+        blogPosts.Add(blogPost);
+
+      }
+      var result = blogPosts.AsQueryable()
+          .Where(post => post.LikedBy != null && post.LikedBy.Any())
+          .OrderByDescending(post => post.LikedBy.Count)
+          .Take(5)
+          .ToList();
+
+      return result;
+      // return blogPosts;
+
+
+    }
   }
 }
