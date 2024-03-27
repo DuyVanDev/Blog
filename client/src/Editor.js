@@ -47,6 +47,7 @@ export default function Editor({name,  value, onChange }) {
         modules={modules}
         formats={formats}
         defaultValue={''}
+        className='h-72 mb-12'
       />
     </div>
   );

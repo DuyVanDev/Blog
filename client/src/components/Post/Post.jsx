@@ -2,122 +2,119 @@
 import Link from "next/link";
 import React, { useContext, useState } from "react";
 import Image from "next/image";
-import useAxios from "@/untils/useAxios";
+import useAxios from "@/utils/useAxios";
 import { AuthContext } from "../../../context/AuthContext";
-import {
-  Box,
-  Grid,
-  Typography,
-} from "@mui/material";
-import {  createTheme } from "@mui/material/styles";
-// import {MoreVertIcon} from '@mui/icons-material';
+import { UserOutlined } from "@ant-design/icons";
+import { Avatar, Button } from "antd";
 import dayjs from "dayjs";
+import PopupMenu from "../PopupMenu/PopupMenu";
+import {
+  EmailShareButton,
+  FacebookShareButton,
+  GabShareButton,
+  HatenaShareButton,
+  InstapaperShareButton,
+  LineShareButton,
+  LinkedinShareButton,
+  LivejournalShareButton,
+  MailruShareButton,
+  OKShareButton,
+  PinterestShareButton,
+  PocketShareButton,
+  RedditShareButton,
+  TelegramShareButton,
+  TumblrShareButton,
+  TwitterShareButton,
+  ViberShareButton,
+  VKShareButton,
+  WhatsappShareButton,
+  WorkplaceShareButton,
+} from "react-share";
+import { CalculateTimeAgo } from "@/common/CalculateTimeAgo";
+import { ConvertTime } from "@/common/ConvertTime";
 
 const Post = (props) => {
   const theme = createTheme();
+ 
 
   const { post } = props;
   const { authTokens } = useContext(AuthContext);
-  let api = useAxios();
 
-  const ConvertTime = (time) => {
-    const par = dayjs(time).format("DD/MM/YYYY ");
-    return par;
-  };
-  // const data = {
-  //   commentText: comment,
-  //   postId: post.postID,
-  //   userId: authTokens.userId,
-  // };
-  // console.log(authTokens);
-  // const options = {
-  //   method: "post",
-  //   data: data,
-  //   url: "https://localhost:7231/api/Comment",
-  // };
 
-  const handleComment = async (event) => {
-    event.preventDefault();
-    try {
-      if (!authTokens) {
-        router.push("dashboard/login");
-        return;
-      }
-      const { data } = await api(options);
-    } catch (err) {
-      throw new Error(err);
-    }
-  };
+  const content = (
+    <div>
+      <span className="flex items-center gap-4 px-4 py-3 w-full cursor-pointer hover:bg-lightgray">
+        <FontAwesomeIcon icon={faFacebook} /> <p>Chia sẻ lên Facebook</p>
+      </span>
+      <span className="flex items-center gap-4 px-4 py-3 cursor-pointer hover:bg-lightgray">
+        <FontAwesomeIcon icon={faTwitter} /> <p>Chia sẻ lên Twitter</p>
+      </span>
+      <span className="flex items-center gap-4 px-4 py-3 cursor-pointer hover:bg-lightgray">
+        <FontAwesomeIcon icon={faLink} /> <p>Sao chép liên kết</p>
+      </span>
+    </div>
+  );
   const date = new Date();
   return (
-    <Link href={`blog/${post.postID}`} target="_blank">
-    <Grid container spacing={2} mb={6}  >
-      <Grid item xs={12} md={4} >
-        <Box
-          sx={{
-            position: "relative",
-            height: "150px",
-            width: "100%",
-            minWidth: "250px",
-          }}
-        >
-          <Image
-            src={post.image}
-            alt=""
-            fill
-            priority
-            style={{ objectFit: "cover", backgroundPosition: "center"}}
-          />
-        </Box>
-      </Grid>
+    <></>
+    // <div
+    //   key={post.postID}
+    //   className="border-[1px] border-gray-200 p-4 rounded-lg cursor-pointer"
+    // >
+    //   <div className="flex items-center justify-between mb-2">
+    //     <Link href={`profile/?id=${post.userID}`}>
+    //       <div className="flex items-center  gap-2">
+    //         <Avatar size="large" icon={<UserOutlined />} />
+    //         <span>{post.username}</span>
+    //       </div>
+    //     </Link>
 
-      <Grid item xs={12} md={8} >
-        <Typography variant="subtitle" component="h3" mb={1} >
-          {post.title}
-        </Typography>
-        <Box
-          sx={{
-            display: "flex",
-            marginBottom: "8px",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <Typography xs={12}
-            color="textSecondary"
-            fontWeight={"bold"}
-            fontSize={11}
-            variant="subtitle"
-            component="p"
-          >
-            @{post.username}
-          </Typography>
-          <div>
-            <Typography
-              xs={12}
-              color="textSecondary"
-              fontSize={9}
-              fontWeight={600}
-              variant="subtitle"
-              component="p"
-            >
-              {ConvertTime(post.createdAt)}
-            </Typography>
-          </div>
-        </Box>
-        <Typography
-          color="textPrimary"
-          fontSize={13}
-          variant="string"
-          component="p"
-        >
-          <div style={{ lineHeight: 1.6 }} dangerouslySetInnerHTML={{ __html: post.content.slice(0,300)+" ..." }} />
-        </Typography>
-      </Grid>
-      
-    </Grid>
-    </Link>
-    
+    //     <div className="flex items-center gap-2">
+    //       {/* setting */}
+    //       <FontAwesomeIcon className="cursor-pointer" icon={faBookmark} />
+    //       <PopupMenu content={content}>
+    //         <FontAwesomeIcon className="cursor-pointer" icon={faEllipsis} />
+    //       </PopupMenu>
+    //     </div>
+    //   </div>
+    //   <Link
+    //     href={{
+    //       pathname: `blog/${post.postID}`,
+    //     }}
+    //     className="flex items-center justify-between"
+    //   >
+    //     <div className="flex flex-col gap-2">
+    //       {/* title */}
+    //       <div>
+    //         <h3 className="font-bold text-xl ">{post.title}</h3>
+
+    //         {/* desc */}
+    //         <p>
+    //           <div
+    //             style={{ lineHeight: 1.6 }}
+    //             dangerouslySetInnerHTML={{
+    //               __html: post.content.slice(0, 100) + " ...",
+    //             }}
+    //           />
+    //         </p>
+    //       </div>
+
+    //       <div className="flex items-center gap-2">
+    //         {/* subject */}
+
+    //         <button className="bg-lightgray px-4 py-2 rounded-full">
+    //           <p className="text-md font-medium">{post.categoryName}</p>
+    //         </button>
+
+    //         {/* date */}
+    //         <p>{CalculateTimeAgo(post.createdAt)}</p>
+    //       </div>
+    //     </div>
+    //     <div className="w-[200px] h-[100px]">
+    //       <img src={post.image} alt="" className="w-full h-full object-cover" />
+    //     </div>
+    //   </Link>
+    // </div>
   );
 };
 

@@ -55,8 +55,6 @@ export const AuthProvider = ({ children }) => {
     router.push("/");
   };
 
-  
-
   let contextData = {
     user: user,
     authTokens: authTokens,

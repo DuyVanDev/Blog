@@ -1,42 +1,187 @@
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:where(.css-dev-only-do-not-override-zl9ks2).ant-popover .ant-popover-inner {
+    padding : 0 !important;
 }
 
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden !important;
-  padding-right: 0 !important;
-  background-color: white !important;
-  color : #111 !important;
+
+.caret {
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid black;
+    transition: 0.3s;
+  }
+  
+  .caret-rotate {
+    transform: rotate(180deg);
+  }
+
+  
+.select {
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background 0.3s;
 }
 
-.theme {
-  transition: 1s all ease;
+.select-clicked {
+  border : 2px #26489a solid;
+  box-shadow: 0 0 0.8em #26489a;
 }
-.light {
-  background-color: white !important;
-  color : #111 !important;
+
+
+.menu {
+  background: #ffeeee;
+  border : 1px solid #ccc;
+  position: absolute;
+  top: 3em;
+  left: 50%;
+  width: 100%;
+  transform : translateX(-50%);
+  opacity: 0;
+  display: none;
+  transition: 0.2s;
+  z-index: 1;
 }
+
+.menu li {
+  padding: 0.7em 0.5em;
+  cursor: pointer;
+}
+
+
+.menu-open {
+  display: block;
+  opacity: 1;
+}
+
+
+/* banner */
+
+.swiper-button-prev, .swiper-button-next {
+  color: white !important;
+  font-weight: bold !important;
+}
+
+.swiper-pagination.swiper-pagination-bullets.swiper-pagination-horizontal {
+  bottom: 80px;
+}
+
+.swiper-pagination-bullet {
+  width: 20px !important;
+  border-radius: 0 !important;
+}
+
+span.swiper-pagination-bullet.swiper-pagination-bullet-active  {
+  background-color: #47d155;
+}
+
+.swiper-button-prev:after, .swiper-button-next:after {
+  font-size: 20px !important;
+  font-weight: bold;
+}
+:where(.css-dev-only-do-not-override-zl9ks2).ant-menu-light {
+  background-color: transparent;
+}
+/* end banneer */
+
+aside.ant-layout-sider.ant-layout-sider-dark.ant-layout-sider-has-trigger {
+  min-width: 300px !important;
+}
+
+
+/* Theme Switch */
+
+/* ThemeSwitch.css */
+.switch {
+  position: relative;
+  width: 55px;
+  height: 25px;
+  background-color: #ddd;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.switch .ball {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 21px;
+  height: 21px;
+  background-color: #fff;
+  border-radius: 50%;
+  transition: transform 0.5s;
+}
+
+.switch.dark {
+  background-color: #333;
+}
+
+.ball.dark {
+  background-color: #333;
+}
+
+.switch.dark .ball {
+  transform: translateX(30px);
+}
+
+.switch.light .ball {
+  transform: translateX(2px);
+}
+
+/* end switch */
+
+
+/* Pagination.css */
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.pagination-btn {
+  padding: 0.5rem 1rem;
+  margin: 0 0.25rem;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  background-color: #fff;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #f0f0f0;
+    color: #9f1239;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+.active {
+  background-color: #9f1239;
+  color: #fff;
+}
+
+.pagination-ellipsis {
+  padding: 0.5rem 1rem;
+  margin: 0 0.25rem;
+  cursor: not-allowed;
+  color: #ccc;
+}
+
 .dark {
-  background-color: #111 !important;
-  color : white !important;
+  background-color: #020b19;
+  color: white !important;
 }
 
-a {
-  text-decoration: none;
-  color : inherit;
+.light {
+  background-color:  white;
+  color: black !important;
 }
-/* 
-.container {
-  max-width: 1366px;
-  min-height: 100vh;
-  margin : 0 auto;
-  padding : 0 60px;
-  display : flex;
-  flex-direction: column;
-  justify-content: space-between;
-} */
-

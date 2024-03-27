@@ -10,7 +10,6 @@ const About = () => {
     `http://localhost:5167/api/BlogPost`,
     fetcher
   );
-  console.log(data)
   return (
     <div className={styles.container}>
       <div className={styles.imgContainer}>

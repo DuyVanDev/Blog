@@ -1,22 +1,13 @@
 "use client";
 import * as React from "react";
-import Box from "@mui/material/Box";
-import Avatar from "@mui/material/Avatar";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import Divider from "@mui/material/Divider";
-import IconButton from "@mui/material/IconButton";
-import Tooltip from "@mui/material/Tooltip";
-import PersonAdd from "@mui/icons-material/PersonAdd";
-import Settings from "@mui/icons-material/Settings";
-import Logout from "@mui/icons-material/Logout";
+import { Avatar } from "antd";
 import { AuthContext } from "../../../context/AuthContext";
 import Link from "next/link";
-import { Typography } from "@mui/material";
+import { UserOutlined } from "@ant-design/icons";
+import PopupMenu from "../PopupMenu/PopupMenu";
 
 export default function AccountMenu() {
-  const { authTokens, logoutUser } = React.useContext(AuthContext);
+  const { user,authTokens, logoutUser } = React.useContext(AuthContext);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -27,87 +18,89 @@ export default function AccountMenu() {
     event.stopPropagation();
     setAnchorEl(null);
   };
+  const content = (
+    <div>
+     
+      <span className="flex items-center gap-4 px-4 py-3 cursor-pointer hover:bg-lightgray">
+      <Link href={`profile/?id=${authTokens?.userId}`}>Trang cá nhân</Link>
+        {/* <Link>Trang cá nhân</Link> */}
+      </span>
+      <Link href={"/write"} className="flex items-center gap-4 px-4 py-3 cursor-pointer hover:bg-lightgray">
+        <p>Viết bài</p>
+      </Link>
+      <span className="flex items-center gap-4 px-4 py-3 cursor-pointer hover:bg-lightgray">
+        <p>Bài viết đã lưu</p>
+      </span>
+      <span onClick={logoutUser} className="flex items-center gap-4 px-4 py-3 cursor-pointer hover:bg-lightgray">
+        <p>Đăng xuất</p>
+      </span>
+    </div>
+  );
   return (
-    <React.Fragment>
+    <div className="lg:order-2">
       {authTokens ? (
-        <React.Fragment>
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              textAlign: "center",
-              justifySelf: "flex-end",
-            }}
-          >
-            <Tooltip title="Account settings">
-              <IconButton
-                onClick={handleClick}
-                size="small"
-                sx={{ ml: 2 }}
-                aria-controls={open ? "account-menu" : undefined}
-                aria-haspopup="true"
-                aria-expanded={open ? "true" : undefined}
-              >
-                <Avatar sx={{ width: 32, height: 32 }}>
-                  {authTokens.username.slice(0, 1).toUpperCase()}
-                </Avatar>
-              </IconButton>
-            </Tooltip>
-          </Box>
-          <Menu
-            anchorEl={anchorEl}
-            id="account-menu"
-            open={open}
-            onClose={handleClose}
-            onClick={handleClose}
-            PaperProps={{
-              elevation: 0,
-              sx: {
-                overflow: "visible",
-                filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-                mt: 1.5,
-                "& .MuiAvatar-root": {
-                  width: 32,
-                  height: 32,
-                  ml: -0.5,
-                  mr: 1,
-                },
-                "&:before": {
-                  content: '""',
-                  display: "block",
-                  position: "absolute",
-                  top: 0,
-                  right: 14,
-                  width: 10,
-                  height: 10,
-                  bgcolor: "background.paper",
-                  transform: "translateY(-50%) rotate(45deg)",
-                  zIndex: 0,
-                },
-              },
-            }}
-            transformOrigin={{ horizontal: "right", vertical: "top" }}
-            anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-          >
-            <Link href={`profile/?id=${authTokens.userId}`}>
-              <MenuItem>
-                <Avatar /> {authTokens.username}
-              </MenuItem>
-            </Link>
-
-            <MenuItem onClick={logoutUser}>
-              <ListItemIcon>
-                <Logout fontSize="small" />
-              </ListItemIcon>
-              Logout
-            </MenuItem>
-          </Menu>
-        </React.Fragment>
+        <div className="flex items-center justify-center gap-4">
+          <PopupMenu content={content}>
+            {/* <FontAwesomeIcon icon={faBell} /> */}
+          </PopupMenu>
+          <PopupMenu content={content}>
+            <img src="https://res.cloudinary.com/dqpjoki72/image/upload/v1710771648/avatar_xp9qzc.webp" alt="" width={30}/>
+            <span>{authTokens.username}</span>
+          </PopupMenu>
+        </div>
       ) : (
-        <Box>
-         <Link href={"/dashboard/login"}> <Typography variant="p" color={"text.primary"}>Login</Typography></Link>
-        </Box>
+        <div class="flex items-center lg:order-2">
+          <a href="#">
+            <Link
+              href={"/dashboard/login"}
+              class="text-gray-800 dark:text-white hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800"
+            >
+              {" "}
+              Đăng nhập
+            </Link>
+          </a>
+          <Link
+            href={"/dashboard/register"}
+            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+          >
+            Đăng ký
+          </Link>
+          <button
+            data-collapse-toggle="mobile-menu-2"
+            type="button"
+            class="inline-flex items-center p-2 ml-1 text-sm text-gray-500 rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+            aria-controls="mobile-menu-2"
+            aria-expanded="false"
+          >
+            <span class="sr-only">Open main menu</span>
+            <svg
+              class="w-6 h-6"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                clip-rule="evenodd"
+              ></path>
+            </svg>
+            <svg
+              class="hidden w-6 h-6"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                clip-rule="evenodd"
+              ></path>
+            </svg>
+          </button>
+        </div>
       )}
-    </React.Fragment>
+    </div>
+   
   );
 }

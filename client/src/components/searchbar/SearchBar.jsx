@@ -1,10 +1,7 @@
 "use client";
 import { useState } from "react";
-import IconButton from "@mui/material/IconButton";
-import SearchIcon from "@mui/icons-material/Search";
-import TextField from "@mui/material/TextField";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Box } from "@mui/material";
+import { Box, IconButton, TextField } from "@mui/material";
 
 const SearchBar = () => {
   const search = useSearchParams();
@@ -27,17 +24,15 @@ const SearchBar = () => {
           color: "#fff",
           width: "100%",
           justifyContent: "space-between",
-          borderRadius : "20px"
-
+          borderRadius: "20px",
         }}
       >
         <TextField
           sx={{
-            "& fieldset": { border: 'none' },
+            "& fieldset": { border: "none" },
             flexGrow: 1,
-            outline : "none",
-            borderRadius : "20px"
-            
+            outline: "none",
+            borderRadius: "20px",
           }}
           id="search-bar"
           value={searchQuery}
@@ -46,10 +41,10 @@ const SearchBar = () => {
           size="small"
         />
         <IconButton type="submit" aria-label="search">
-          <SearchIcon style={{ fill: "#000" }} />
+          {/* <SearchIcon style={{ fill: "#000" }} /> */}
         </IconButton>
       </Box>
-      </form>
+    </form>
   );
 };
 

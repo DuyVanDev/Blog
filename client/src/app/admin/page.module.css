@@ -1,0 +1,40 @@
+.logo {
+  height: 32px;
+  background: rgba(255, 255, 255, 0.2);
+  margin: 16px;
+}
+.header {
+  /* style={{ display: 'flex', background: '#fff', padding: 0 }} */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  padding: 0;
+  padding-right: 16px;
+}
+.header section {
+  display: flex;
+  /* justify-content: space-between; */
+  align-items: center;
+  height: 100%;
+}
+.header .sider-trigger {
+  margin-right: 8px;
+  font-size: 20px;
+  padding: 0 24px;
+  cursor: pointer;
+}
+.header .sider-trigger:hover {
+  background-color: rgba(0,0,0,.025);
+}
+.header-avatar {
+  padding: 0 8px;
+  cursor: pointer;
+  background-color: #fff;
+}
+.header-avatar > * {
+  margin: 0 4px;
+}
+.header-avatar:hover {
+  background-color: rgba(0,0,0,.025);
+}

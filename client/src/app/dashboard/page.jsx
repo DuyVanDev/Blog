@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import useAxios from "@/untils/useAxios";
+import useAxios from "@/utils/useAxios";
 import { AuthContext } from "../../../context/AuthContext";
 import axios from "axios";
 import styles from "./page.module.css";
